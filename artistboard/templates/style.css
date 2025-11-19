@@ -1,0 +1,41 @@
+{% load static %}
+.iommi_logo_menu {
+    -webkit-mask-image: url({% static 'artistboard/logo.svg' %});
+    -webkit-mask-repeat: no-repeat;
+    mask-image: url({% static 'artistboard/logo.svg' %});
+    mask-repeat: no-repeat;
+    background-image: none;
+    background-color: white;
+    background-size: 100%;
+    min-height: 7em;
+    margin-right: 0.7rem;
+}
+
+.main_menu {
+    width: 14em;
+    background-color: #221153
+}
+
+.grid-container {
+    padding-top: 2em;
+}
+
+@media screen and (max-width: 767px) {
+    .main_menu {
+        position: inherit;
+        height: auto;
+        margin-bottom: 1em;
+    }
+
+    .top-bar[data-iommi-type="DebugMenu"] {
+        display: none;
+    }
+}
+
+.helptext {
+	font-size: small;
+	text-align: right;
+	line-height: 0em;
+	padding-bottom: 1em;
+	color: grey;
+}
