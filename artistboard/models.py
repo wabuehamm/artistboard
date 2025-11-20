@@ -74,6 +74,9 @@ class SeasonTodo(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     done = models.BooleanField(default=False)
 
+    def __str__(self):
+        return "%s %s" % ("✔️" if self.done else "❌", self.todo.todo)
+
 
 class Show(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
@@ -103,6 +106,9 @@ class EventTodo(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
     done = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "%s %s" % ("✔️" if self.done else "❌", self.todo.todo)
 
 
 class EventArtist(models.Model):

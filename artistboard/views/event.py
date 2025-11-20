@@ -19,6 +19,9 @@ class EventView(Page):
         columns__artists=Column(
             cell__value=lambda row, **_: EventArtist.objects.filter(event=row)
         ),
+        columns__todos=Column(
+            cell__value=lambda row, **_: EventTodo.objects.filter(event=row),
+        ),
         columns__show__filter__include=True,
         columns__edit=Column.edit(),
         columns__delete=Column.delete(),

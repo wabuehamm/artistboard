@@ -25,6 +25,9 @@ class SeasonView(Page):
             ),
             cell__value="Events",
         ),
+        columns__todos=Column(
+            cell__value=lambda row, **_: SeasonTodo.objects.filter(season=row),
+        ),
         columns__edit=Column.edit(),
         columns__delete=Column.delete(),
     )
