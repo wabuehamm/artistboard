@@ -60,6 +60,8 @@ A template is designed for different points in artistboard. Depending on that ty
 * All Artists will get the context of all artists
 * Single artist will get the context of artist, all booked events for that artists and all events without a booked artist
 
+Please refer to the [models definition](../artistboard/models.py) for the available fields of the different context parts.
+
 For each template you can specify the typical recipient fields, the subject and the body in text and HTML form. Additionally, you can enable markdown support to use markdown to render the text body and use it as the HTML body. See the [Markdown guide](https://www.markdownguide.org/) for more information on how to write in Markdown.
 
 Every field is a template field and will be rendered using Django's template system before sending out the mail. This requires a bit of knowledge about this system. See the [documentation about designing templates](https://docs.djangoproject.com/en/5.2/ref/templates/language/) for more details.
