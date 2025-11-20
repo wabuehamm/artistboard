@@ -18,6 +18,6 @@ class ArtistboardConfig(AppConfig):
                     tag="style",
                     text=get_template(template_name="style.css").render(dict()),
                 ),
-                # root__assets__favicon=Asset(template="favicon.html"),
+                root__assets__favicon=Asset(template="favicon.html"),
             ),
         )
