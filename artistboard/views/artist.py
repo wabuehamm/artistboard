@@ -4,7 +4,7 @@ from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Tabl
 
 from ..models import Artist, MailTemplate, Link
 from iommi.form import save_nested_forms
-from datetime import datetime
+from django.utils.safestring import mark_safe
 
 
 def handle_send_mail(form, **_):
@@ -34,6 +34,19 @@ class ArtistView(Page):
     artists = Table(
         auto__model=Artist,
         page_size=10,
+        columns__name__filter__include=True,
+        columns__locked__filter__include=True,
+        columns__contact_name__filter__include=True,
+        columns__style__filter__include=True,
+        columns__rating__filter__include=True,
+        columns__image=Column(
+            cell__value=lambda row, **_: row.image.url if row.image else "",
+            cell__format=lambda value, **_: (
+                mark_safe('<img src="%s" />' % (value)) if value != "" else ""
+            ),
+            cell__attrs__style={"max-width": "4em", "max-height": "4em"},
+        ),
+        query__form__fields__locked__initial=False,
         columns__info__include=False,
         columns__edit=Column.edit(),
         columns__delete=Column.delete(),
