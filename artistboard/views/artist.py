@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Table
 
-from ..models import Artist, MailTemplate, Link
+from ..models import Artist, EventArtist, MailTemplate, Link
 from iommi.form import save_nested_forms
 from django.utils.safestring import mark_safe
 
@@ -86,6 +86,18 @@ class ArtistEditForm(Form):
         ),
         columns__type__field__include=True,
         columns__url__field__include=True,
+        columns__delete=EditColumn.delete(),
+        **{
+            "attrs__data-iommi-edit-table-delete-with": "checkbox",
+        }
+    )
+
+    interesting_events = EditTable(
+        auto__model=EventArtist,
+        rows=lambda pk, **_: EventArtist.objects.filter(artist=pk),
+        columns__artist__field=Field.non_rendered(
+            initial=lambda pk, **_: Artist.objects.get(pk=pk)
+        ),
         columns__delete=EditColumn.delete(),
         **{
             "attrs__data-iommi-edit-table-delete-with": "checkbox",
