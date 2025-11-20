@@ -78,6 +78,8 @@ Click on "Todos" to see the todo overview:
 
 ![Todo overview](./todos.png)
 
-Use the form to add a new todo item. Todos can be made available for seasons and events.
+Use the form to add a new todo item. Todos can be made available for seasons and events. If you click on "Edit" you can edit the todo and see an overview of all events that are connected to the todo.
+
+The filter feature currently isn't working because of [this Github issue](https://github.com/iommirocks/iommi/issues/686).
 
 **Hint**: artistboard automatically adds all the required todo items to a season or an event when it is created. If you add new todos configurations after you have created a season or an event, you'll have to edit the season or event and click on "Save" to trigger todo item generation again.
