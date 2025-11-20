@@ -24,21 +24,21 @@ class TodoEdit(Form):
 
     season_todos = EditTable(
         auto__model=SeasonTodo,
-        columns__season__filter__include=True,
+        # columns__season__filter__include=True,
         columns__description=Column(attr="todo__description", after=3),
         columns__done__field__include=True,
         rows=lambda pk, **_: SeasonTodo.objects.filter(todo__pk=pk),
         edit_actions__add_row__include=False,
-        columns__done__filter__include=True,
+        # columns__done__filter__include=True,
         include=lambda pk, **_: Todo.objects.get(pk=pk).available_for == "season",
     )
 
     event_todos = EditTable(
         auto__model=EventTodo,
-        columns__event__filter__include=True,
+        # columns__event__filter__include=True,
         columns__description=Column(attr="todo__description", after=3),
         columns__done__field__include=True,
-        columns__done__filter__include=True,
+        # columns__done__filter__include=True,
         rows=lambda pk, **_: EventTodo.objects.filter(todo__pk=pk),
         edit_actions__add_row__include=False,
         include=lambda pk, **_: Todo.objects.get(pk=pk).available_for == "event",
