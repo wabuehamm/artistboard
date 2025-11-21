@@ -8,7 +8,11 @@ class AuthMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_authenticated or request.path.startswith("/login"):
+        if (
+            request.user.is_authenticated
+            or request.path.startswith("/login")
+            or request.path.startswith("/api")
+        ):
             return self.get_response(request)
         else:
             path = request.build_absolute_uri()
