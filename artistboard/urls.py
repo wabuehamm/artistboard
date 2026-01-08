@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import home, mail_template, season, event, artist, mail_preview, todos
+from .views import home, mail_template, event, artist, mail_preview, todos
+from .views.season import season, booking_overview
 from iommi.main_menu import MainMenu, M, EXTERNAL
 from iommi.views import auth_views
 
@@ -27,6 +28,11 @@ menu_declaration = MainMenu(
                     "<int:season_pk>/shows/<int:pk>/",
                     season.SeasonEdit().as_view(),
                     name="event-edit",
+                ),
+                path(
+                    "<int:season_pk>/booking/",
+                    booking_overview.BookingOverviewPage().as_view(),
+                    name="booking-overview",
                 ),
             ],
         ),

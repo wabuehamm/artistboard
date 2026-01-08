@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Table
 
-from ..models import MailTemplate, Season, SeasonTodo, Show
+from artistboard.models import MailTemplate, Season, SeasonTodo, Show
 from iommi.form import save_nested_forms
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
@@ -24,6 +24,13 @@ class SeasonView(Page):
                 "main_menu.events", query={"season": row.year}
             ),
             cell__value="Events",
+        ),
+        columns__overview=Column.link(
+            attr=None,
+            cell__url=lambda row, **_: reverse(
+                "booking-overview", kwargs={"season_pk": row.pk}
+            ),
+            cell__value="Booking overview",
         ),
         columns__todos=Column(
             cell__value=lambda row, **_: SeasonTodo.objects.filter(season=row),
