@@ -101,6 +101,39 @@ class Event(models.Model):
     def __str__(self):
         return "%s@%s:%s" % (self.show, self.start_date, self.start_time)
 
+    def fetch_artist_count(self):
+        artists = EventArtist.objects.filter(event=self)
+        artist_count = []
+        for artist in artists:
+            if Event.objects.filter(booked_artist=artist.artist).count() > 0:
+                continue
+            artist_count.append(
+                {
+                    "name": artist.artist.name,
+                    "count": EventArtist.objects.filter(
+                        artist=artist.artist, event__booked_artist=None
+                    ).count(),
+                }
+            )
+        return sorted(artist_count, key=lambda artist: artist["count"])
+
+    @property
+    def booking_artists(self):
+        artist_count = self.fetch_artist_count()
+        return_value = map(
+            lambda artist: "%s (%s)" % (artist["name"], artist["count"]), artist_count
+        )
+        return ",".join(return_value)
+
+    @property
+    def booking_least_events(self):
+        artist_count = self.fetch_artist_count()
+
+        if len(artist_count) > 0:
+            return artist_count[0]["count"]
+
+        return 99999
+
 
 class EventTodo(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
