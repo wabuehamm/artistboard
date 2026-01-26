@@ -109,6 +109,7 @@ class Event(models.Model):
                 continue
             artist_count.append(
                 {
+                    "pk": artist.artist.pk,
                     "name": artist.artist.name,
                     "count": EventArtist.objects.filter(
                         artist=artist.artist, event__booked_artist=None
@@ -117,13 +118,27 @@ class Event(models.Model):
             )
         return sorted(artist_count, key=lambda artist: artist["count"])
 
-    @property
-    def booking_artists(self):
+    def booking_artists(self, event_pk=None):
         artist_count = self.fetch_artist_count()
-        return_value = map(
-            lambda artist: "%s (%s)" % (artist["name"], artist["count"]), artist_count
-        )
-        return ",".join(return_value)
+        if event_pk is None:
+            return_value = map(
+                lambda artist: "%s (%s)" % (
+                    artist["name"],
+                    artist["count"]
+                ), artist_count
+            )
+        else:
+            return_value = map(
+                lambda artist: "<a href=\"%s\">%s (%s)</a>" % (
+                    reverse("event-assign", kwargs={
+                        "pk": event_pk,
+                        "artist_pk": artist["pk"],
+                    }),
+                    artist["name"],
+                    artist["count"]
+                ), artist_count
+            )
+        return ", ".join(return_value)
 
     @property
     def booking_least_events(self):

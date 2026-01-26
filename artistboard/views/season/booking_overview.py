@@ -1,6 +1,7 @@
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from iommi import Column, Page, Table, html
-from artistboard.models import Event, EventArtist
+from artistboard.models import Event
 
 
 class BookingOverviewTable(Table):
@@ -8,7 +9,7 @@ class BookingOverviewTable(Table):
     start_date = Column(cell__value=lambda row, **_: row.start_date)
     start_time = Column(cell__value=lambda row, **_: row.start_time)
 
-    booking_artists = Column(cell__value=lambda row, **_: row.booking_artists)
+    booking_artists = Column(cell__value=lambda row, **_: mark_safe(row.booking_artists(row.pk)))
     booking_least_events = Column(cell__value=lambda row, **_: row.booking_least_events)
 
     class Meta:

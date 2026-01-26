@@ -47,6 +47,9 @@ menu_declaration = MainMenu(
                     event.event_delete.as_view(),
                     name="event-delete",
                 ),
+                path(
+                    '<int:pk>/assign/<int:artist_pk>', event.EventEdit().as_view(), name="event-assign"
+                )
             ],
         ),
         artists=M(
