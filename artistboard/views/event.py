@@ -44,11 +44,19 @@ def fetch_artists(event_pk):
     return Artist.objects.filter(pk__in=artists)
 
 
+def get_booked_artist_initial(instance, **kwargs):
+    if instance.booked_artist is not None:
+        return instance.booked_artist
+    elif "artist_pk" in kwargs:
+        return Artist.objects.get(pk=kwargs["artist_pk"])
+    return None
+
 class EventEdit(Form):
     event = Form.edit(
         auto__model=Event,
         instance=lambda pk, **_: Event.objects.get(pk=pk),
         fields__booked_artist__choices=lambda pk, **_: fetch_artists(pk),
+        fields__booked_artist__initial=lambda pk, instance, **kwargs: get_booked_artist_initial(instance, **kwargs),
     )
     todos = EditTable(
         auto__model=EventTodo,
