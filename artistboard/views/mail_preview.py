@@ -6,6 +6,7 @@ from django.urls import reverse
 from iommi import Action, Field, Form, Page, html
 from markdown import markdown
 from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
 
 from artistboard.models import Artist, Event, MailTemplate, Season, Show
 
@@ -64,15 +65,24 @@ def render_field(request, field):
 
 
 def handle_send_mail(form, request, page, **_):
+    if settings.EMAIL_FROM == "":
+        form.add_error("Error in the mail configuration. Missing from")
+        return
     if form.is_valid():
         msg = EmailMultiAlternatives(
             render_field(request, "subject"),
             render_field(request, "body_text"),
-            "parkbuehne@waldbuehne-heessen.de",
+            settings.EMAIL_FROM,
             render_field(request, "to").split(","),
-            cc=render_field(request, "cc").split(","),
-            bcc=render_field(request, "bcc").split(","),
         )
+
+        template = MailTemplate.objects.get(pk=request.GET["template"])
+
+        if template.cc is not None and render_field(request, "cc") != "":
+            msg.cc = render_field(request, "cc").split(",")
+
+        if template.bcc is not None and render_field(request, "bcc") != "":
+            msg.bcc = render_field(request, "bcc").split(",")
 
         msg.attach_alternative(
             (
