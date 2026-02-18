@@ -1,6 +1,5 @@
 from django.urls import path, include
 from django_filters import rest_framework
-
 from rest_framework import routers, serializers, viewsets, generics
 
 from artistboard.models import Artist, Event, Show, Season, Link
@@ -75,7 +74,6 @@ router.register(r"links", LinkViewSet)
 router.register(r"events", EventViewSet)
 router.register(r"shows", ShowViewSet)
 router.register(r"seasons", SeasonViewSet)
-
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

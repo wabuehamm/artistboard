@@ -1,12 +1,14 @@
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from iommi import Column, Form, Page, Table
+from iommi.form import save_nested_forms
 
 from ..models import MailTemplate
-from iommi.form import save_nested_forms
 
 
 class MailTemplateView(Page):
     mail_templates = Table(
+        title=_("Mail templates"),
         auto__model=MailTemplate,
         page_size=10,
         columns__edit=Column.edit(),
@@ -16,7 +18,7 @@ class MailTemplateView(Page):
         columns__use_markdown__include=False,
     )
     new_mail_template = Form.create(
-        title="New mail template",
+        title=_("New mail template"),
         auto__model=MailTemplate,
         extra__redirect_to=".",
         fields__subject__input__attrs__rows=3,
@@ -30,6 +32,7 @@ class MailTemplateView(Page):
 
 class MailTemplateEdit(Form):
     mail_template = Form.edit(
+        title=_("Mail template"),
         auto__model=MailTemplate,
         instance=lambda pk, **_: MailTemplate.objects.get(pk=pk),
         fields__subject__input__attrs__rows=3,

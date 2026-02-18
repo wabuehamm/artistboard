@@ -1,45 +1,58 @@
+from datetime import datetime
+
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Table
+from iommi.form import save_nested_forms
 
 from artistboard.models import MailTemplate, Season, SeasonTodo, Show
-from iommi.form import save_nested_forms
-from datetime import datetime
-from django.contrib.auth.decorators import login_required
 
 
-from django.utils.decorators import method_decorator
+def season_todos(pk):
+    return ", ".join(map(
+        lambda todo: '<a href="%s">%s</a>' % (
+            reverse("season-todo-toggle", kwargs={"pk": pk, "todo_pk": todo.pk}),
+            todo.__str__(),
+        ),
+        SeasonTodo.objects.filter(season__pk=pk)
+    ))
 
 
 class SeasonView(Page):
     seasons = Table(
+        title=_("Seasons"),
         auto__model=Season,
         page_size=10,
         columns__shows=Column(
             cell__value=lambda row, **_: Show.objects.filter(season=row)
         ),
         columns__events=Column.link(
+            display_name=_("Events"),
             attr=None,
             cell__url=lambda row, **_: reverse(
-                "main_menu.events", query={"season": row.year}
+                "main_menu.events", query={"season": row.pk}
             ),
-            cell__value="Events",
+            cell__value=_("Events"),
         ),
         columns__overview=Column.link(
+            display_name=_("Booking overview"),
             attr=None,
             cell__url=lambda row, **_: reverse(
                 "booking-overview", kwargs={"season_pk": row.pk}
             ),
-            cell__value="Booking overview",
+            cell__value=_("Booking overview"),
         ),
         columns__todos=Column(
-            cell__value=lambda row, **_: SeasonTodo.objects.filter(season=row),
+            display_name=_("Season todos"),
+            cell__value=lambda row, **_: mark_safe(season_todos(row.pk)),
         ),
         columns__edit=Column.edit(),
         columns__delete=Column.delete(),
     )
     new_season = Form.create(
-        title="New season",
+        title=_("New season"),
         auto__model=Season,
         extra__redirect_to=".",
         fields__year__initial=lambda **_: datetime.now().year + 1,
@@ -48,9 +61,11 @@ class SeasonView(Page):
 
 class SeasonEditForm(Form):
     season = Form.edit(
+        title=_("Season"),
         auto__model=Season, instance=lambda pk, **_: Season.objects.get(pk=pk)
     )
     todos = EditTable(
+        title=_("Todos"),
         auto__model=SeasonTodo,
         columns__season__include=False,
         columns__description=Column(attr="todo__description", after=3),
@@ -59,6 +74,7 @@ class SeasonEditForm(Form):
         edit_actions__add_row__include=False,
     )
     shows = EditTable(
+        title=_("Shows"),
         auto__model=Show,
         rows=lambda pk, **_: Show.objects.filter(season__pk=pk),
         columns__season__field=Field.non_rendered(
@@ -93,13 +109,14 @@ class SeasonEdit(Page):
     edit = SeasonEditForm()
 
     send_mail = Form(
-        title="Send mail",
+        title=_("Send mail"),
         fields__template=Field.choice_queryset(
+            display_name=_("Template"),
             choices=MailTemplate.objects.filter(type="single_season")
         ),
         fields__season=Field.hidden(initial=lambda pk, **_: pk),
         actions__preview=Action.primary(
-            display_name="Preview", post_handler=handle_send_mail
+            display_name=_("Preview"), post_handler=handle_send_mail
         ),
     )
 

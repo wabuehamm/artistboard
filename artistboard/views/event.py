@@ -1,33 +1,62 @@
 from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from iommi import Column, EditColumn, EditTable, Field, Form, Page, Table
-
-from ..models import Artist, Event, EventArtist, EventTodo
 from iommi.form import save_nested_forms
+
+from ..models import Artist, Event, EventArtist, EventTodo, Season
+
+
+def event_todos(pk):
+    return ", ".join(map(
+        lambda todo: '<a href="%s">%s</a>' % (
+            reverse("event-todo-toggle", kwargs={"pk": pk, "todo_pk": todo.pk}),
+            todo.__str__(),
+        ),
+        EventTodo.objects.filter(event__pk=pk)
+    ))
 
 
 class EventView(Page):
     events = Table(
+        title=_("Events"),
         auto__model=Event,
         page_size=20,
         columns__agreement__include=False,
         columns__required_free_tickets__include=False,
         columns__required_paid_tickets__include=False,
-        columns__season=Column(
-            attr="show__season__year",
+        columns__season=Column.choice_queryset(
+            display_name=_("Season"),
+            attr="show__season",
+            model=Season,
+            choices=Season.objects.all(),
             filter__include=True,
+            filter__field__search_fields=["year"],
+
         ),
+        query__form__fields__season__initial=lambda request, **_: Season.objects.get(
+            pk=request.GET["season"]
+        ) if "season" in request.GET else None,
         columns__artists=Column(
-            cell__value=lambda row, **_: EventArtist.objects.filter(event=row)
+            display_name=_("Artists"),
+            cell__value=lambda row, **_: mark_safe(row.booking_artists())
         ),
         columns__todos=Column(
-            cell__value=lambda row, **_: EventTodo.objects.filter(event=row),
+            display_name=_("Event todos"),
+            cell__value=lambda row, **_: mark_safe(event_todos(row.pk)),
         ),
+        columns__booked_artist__cell__url=lambda row, **_: reverse(
+            "artist-edit",
+            kwargs={
+                'pk': row.booked_artist.pk
+            }
+        ) if row.booked_artist is not None else "",
         columns__show__filter__include=True,
         columns__edit=Column.edit(),
         columns__delete=Column.delete(),
     )
     new_event = Form.create(
-        title="New Event",
+        title=_("New event"),
         auto__model=Event,
         fields__booked_artist__include=False,
         fields__agreement__include=False,
@@ -51,14 +80,17 @@ def get_booked_artist_initial(instance, **kwargs):
         return Artist.objects.get(pk=kwargs["artist_pk"])
     return None
 
+
 class EventEdit(Form):
     event = Form.edit(
+        title=_("Event"),
         auto__model=Event,
         instance=lambda pk, **_: Event.objects.get(pk=pk),
         fields__booked_artist__choices=lambda pk, **_: fetch_artists(pk),
         fields__booked_artist__initial=lambda pk, instance, **kwargs: get_booked_artist_initial(instance, **kwargs),
     )
     todos = EditTable(
+        title=_("Todos"),
         auto__model=EventTodo,
         columns__event__include=False,
         columns__description=Column(attr="todo__description", after=3),
@@ -66,7 +98,8 @@ class EventEdit(Form):
         rows=lambda pk, **_: EventTodo.objects.filter(event__pk=pk),
         edit_actions__add_row__include=False,
     )
-    interested_artists = EditTable(
+    opportunities = EditTable(
+        title=_("Opportunities"),
         auto__model=EventArtist,
         rows=lambda pk, **_: EventArtist.objects.filter(event=pk),
         columns__event__field=Field.non_rendered(

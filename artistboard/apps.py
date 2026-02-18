@@ -8,8 +8,6 @@ class ArtistboardConfig(AppConfig):
     name = "artistboard"
 
     def ready(self):
-        from . import signals
-
         register_style(
             "artistboard",
             Style(

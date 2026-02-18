@@ -1,17 +1,20 @@
 from django.urls import path
+from django.utils.translation import gettext_lazy as _
+from iommi.main_menu import MainMenu, M, EXTERNAL
+from iommi.views import auth_views
 
 from .views import home, mail_template, event, artist, mail_preview, todos
 from .views.season import season, booking_overview
-from iommi.main_menu import MainMenu, M, EXTERNAL
-from iommi.views import auth_views
 
 menu_declaration = MainMenu(
     items=dict(
         home=M(
+            display_name=_("Home"),
             icon="home",
             view=home.HomePage().as_view(),
         ),
         seasons=M(
+            display_name=_("Seasons"),
             icon="calendar",
             view=season.SeasonView().as_view(),
             paths=[
@@ -34,9 +37,13 @@ menu_declaration = MainMenu(
                     booking_overview.BookingOverviewPage().as_view(),
                     name="booking-overview",
                 ),
+                path(
+                    '<int:pk>/todos/<int:todo_pk>/toggle/', todos.toggleSeasonTodo, name="season-todo-toggle"
+                )
             ],
         ),
         events=M(
+            display_name=_("Events"),
             icon="calendar-o",
             view=event.EventView().as_view(),
             paths=[
@@ -49,10 +56,14 @@ menu_declaration = MainMenu(
                 ),
                 path(
                     '<int:pk>/assign/<int:artist_pk>', event.EventEdit().as_view(), name="event-assign"
+                ),
+                path(
+                    '<int:pk>/todos/<int:todo_pk>/toggle/', todos.toggleEventTodo, name="event-todo-toggle"
                 )
             ],
         ),
         artists=M(
+            display_name=_("Artists"),
             icon="users",
             view=artist.ArtistView().as_view(),
             paths=[
@@ -65,9 +76,18 @@ menu_declaration = MainMenu(
                     artist.artist_delete.as_view(),
                     name="artist-delete",
                 ),
+                path(
+                    "<int:pk>/events/",
+                    artist.EventArtistsPage().as_view(), name="artist-event",
+                ),
+                path(
+                    "<int:pk>/events/delete/",
+                    artist.event_artists_delete.as_view(), name="artist-event-delete",
+                ),
             ],
         ),
         mail_templates=M(
+            display_name=_("Mail templates"),
             icon="envelope",
             view=mail_template.MailTemplateView().as_view(),
             paths=[
@@ -89,6 +109,7 @@ menu_declaration = MainMenu(
             ],
         ),
         todos=M(
+            display_name=_("Todos"),
             icon="check",
             view=todos.TodoView().as_view(),
             paths=[
@@ -99,8 +120,15 @@ menu_declaration = MainMenu(
                 ),
             ],
         ),
-        change_password=M(icon="key", view=EXTERNAL, url="/change_password"),
-        logout=M(icon="sign-out", view=EXTERNAL, url="/logout"),
+        admin=M(
+            display_name=_("Administration"),
+            icon="wrench",
+            view=EXTERNAL,
+            url="/admin/",
+            include=lambda user, **_: user.is_staff
+        ),
+        change_password=M(display_name=_("Change password"), icon="key", view=EXTERNAL, url="/change_password"),
+        logout=M(display_name=_("Logout"), icon="sign-out", view=EXTERNAL, url="/logout"),
     )
 )
 
