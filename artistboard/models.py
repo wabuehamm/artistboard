@@ -92,6 +92,12 @@ class Season(models.Model):
         verbose_name = _("Season")
         verbose_name_plural = _("Seasons")
 
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        for todo in Todo.objects.filter(available_for="season"):
+            if SeasonTodo.objects.filter(season=self, todo=todo).count() == 0:
+                SeasonTodo(season=self, todo=todo).save()
+
     def get_absolute_url(self):
         return reverse("season-view", kwargs={"pk": self.pk})
 
@@ -136,6 +142,12 @@ class Event(models.Model):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        for todo in Todo.objects.filter(available_for="event"):
+            if EventTodo.objects.filter(event=self, todo=todo).count() == 0:
+                EventTodo(event=self, todo=todo).save()
 
     def get_absolute_url(self):
         return reverse("event-view", kwargs={"pk": self.pk})
