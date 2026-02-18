@@ -35,7 +35,7 @@
 .helptext {
 	font-size: small;
 	text-align: right;
-	line-height: 0em;
+	line-height: inherit;
 	padding-bottom: 1em;
 	color: grey;
 }

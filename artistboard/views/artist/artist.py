@@ -1,10 +1,11 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Table
-
-from ..models import Artist, EventArtist, MailTemplate, Link
-from iommi.form import save_nested_forms
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
+from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Table
+from iommi.form import save_nested_forms
+
+from artistboard.models import Artist, MailTemplate, Link
 
 
 def handle_send_mail(form, **_):
@@ -32,6 +33,7 @@ def handle_send_mail(form, **_):
 
 class ArtistView(Page):
     artists = Table(
+        title=_("Artists"),
         auto__model=Artist,
         page_size=10,
         columns__name__filter__include=True,
@@ -46,6 +48,12 @@ class ArtistView(Page):
             ),
             cell__attrs__style={"max-width": "4em", "max-height": "4em"},
         ),
+        columns__opportunities=Column.link(
+            display_name=_("Opportunities"),
+            attr=None,
+            cell__value=_("Opportunities"),
+            cell__url=lambda row, **_: reverse("artist-event", kwargs={"pk": row.pk})
+        ),
         query__form__fields__locked__initial=False,
         columns__info__include=False,
         columns__edit=Column.edit(),
@@ -53,13 +61,13 @@ class ArtistView(Page):
     )
 
     new_artist = Form.create(
-        title="New artist",
+        title=_("New artist"),
         auto__model=Artist,
         extra__redirect_to=".",
     )
 
     send_mail = Form(
-        title="Send mail to all artists",
+        title=_("Send mail to all artists"),
         fields__template=Field.choice_queryset(
             choices=MailTemplate.objects.filter(type="all_artists")
         ),
@@ -71,6 +79,7 @@ class ArtistView(Page):
 
 class ArtistEditForm(Form):
     artist = Form.edit(
+        title=_("Artist"),
         auto__model=Artist,
         instance=lambda pk, **_: Artist.objects.get(pk=pk),
         fields__comments__input__attrs__rows=10,
@@ -78,6 +87,7 @@ class ArtistEditForm(Form):
     )
 
     links = EditTable(
+        title=_("Links"),
         auto__model=Link,
         page_size=10,
         rows=lambda pk, **_: Link.objects.filter(artist__pk=pk),
@@ -86,18 +96,6 @@ class ArtistEditForm(Form):
         ),
         columns__type__field__include=True,
         columns__url__field__include=True,
-        columns__delete=EditColumn.delete(),
-        **{
-            "attrs__data-iommi-edit-table-delete-with": "checkbox",
-        }
-    )
-
-    interesting_events = EditTable(
-        auto__model=EventArtist,
-        rows=lambda pk, **_: EventArtist.objects.filter(artist=pk),
-        columns__artist__field=Field.non_rendered(
-            initial=lambda pk, **_: Artist.objects.get(pk=pk)
-        ),
         columns__delete=EditColumn.delete(),
         **{
             "attrs__data-iommi-edit-table-delete-with": "checkbox",
@@ -113,13 +111,14 @@ class ArtistEdit(Page):
     artist = ArtistEditForm()
 
     send_mail = Form(
-        title="Send mail",
+        title=_("Send mail"),
         fields__template=Field.choice_queryset(
+            display_name=_("Template"),
             choices=MailTemplate.objects.filter(type="single_artist")
         ),
         fields__artist=Field.hidden(initial=lambda pk, **_: pk),
         actions__preview=Action.primary(
-            display_name="Preview", post_handler=handle_send_mail
+            display_name=_("Preview"), post_handler=handle_send_mail
         ),
     )
 

@@ -1,12 +1,14 @@
 from smtplib import SMTPException
+
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponseRedirect
 from django.template import Context
 from django.template import Template as DjangoTemplate
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from iommi import Action, Field, Form, Page, html
 from markdown import markdown
-from django.core.mail import EmailMultiAlternatives
-from django.conf import settings
 
 from artistboard.models import Artist, Event, MailTemplate, Season, Show
 
@@ -32,11 +34,13 @@ class MailBuilder:
         artist = Artist.objects.get(pk=artist_pk)
         booked_events = Event.objects.filter(booked_artist__pk=artist_pk)
         unbooked_events = Event.objects.filter(booked_artist=None)
+        last_season = Season.objects.last()
         return Context(
             dict(
                 artist=artist,
                 booked_events=booked_events,
                 unbooked_events=unbooked_events,
+                last_season=last_season,
             )
         )
 
@@ -64,9 +68,9 @@ def render_field(request, field):
     )
 
 
-def handle_send_mail(form, request, page, **_):
+def handle_send_mail(form, request, page, **kwargs):
     if settings.EMAIL_FROM == "":
-        form.add_error("Error in the mail configuration. Missing from")
+        form.add_error(_("Error in the mail configuration. Missing from"))
         return
     if form.is_valid():
         msg = EmailMultiAlternatives(
@@ -120,7 +124,7 @@ class MailPreview(Page):
     success = html.div(
         attrs__class__callout=True,
         attrs__class__success=True,
-        children=dict(message=html.p("Mail sent successfully.")),
+        children=dict(message=html.p(_("Mail sent successfully."))),
         include=handle_show_success_onetime,
     )
     mail = Form(
@@ -130,19 +134,23 @@ class MailPreview(Page):
             initial=lambda request, **_: request.GET["template"]
         ),
         fields__object=Field.hidden(initial=lambda request, **_: request.GET["object"]),
-        fields__to=Field.text(initial=lambda request, **_: render_field(request, "to")),
-        fields__cc=Field.text(initial=lambda request, **_: render_field(request, "cc")),
+        fields__to=Field.text(display_name=_("To"), initial=lambda request, **_: render_field(request, "to")),
+        fields__cc=Field.text(display_name=_("CC"), initial=lambda request, **_: render_field(request, "cc")),
         fields__bcc=Field.text(
+            display_name=_("BCC"),
             initial=lambda request, **_: render_field(request, "bcc")
         ),
         fields__subject=Field.text(
+            display_name=_("Subject"),
             initial=lambda request, **_: render_field(request, "subject")
         ),
         fields__body_text=Field.textarea(
+            display_name=_("Body (Text)"),
             initial=lambda request, **_: render_field(request, "body_text"),
             input__attrs__rows=40,
         ),
         fields__body_html=Field.textarea(
+            display_name=_("Body (HTML)"),
             input__template=lambda request, **_: (
                 DjangoTemplate(markdown(render_field(request, "body_text")))
                 if MailBuilder(request).template.use_markdown
@@ -151,7 +159,7 @@ class MailPreview(Page):
             input__attrs__rows=40,
         ),
         actions__send=Action.primary(
-            display_name="Send", post_handler=handle_send_mail
+            display_name=_("Send"), post_handler=handle_send_mail
         ),
     )
 

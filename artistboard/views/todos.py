@@ -1,30 +1,34 @@
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from iommi import Column, Form, Page, Table, EditTable
+from iommi.form import save_nested_forms
 
 from artistboard.models import Todo, SeasonTodo, EventTodo
-from iommi.form import save_nested_forms
 
 
 class TodoView(Page):
     todos = Table(
+        title=_("Todos"),
         auto__model=Todo,
         page_size=10,
         columns__edit=Column.edit(),
         columns__delete=Column.delete(),
     )
     new_todo = Form.create(
-        title="New Todo",
+        title=_("New Todo"),
         auto__model=Todo,
         extra__redirect_to=".",
     )
 
 
 class TodoEdit(Form):
-    todo = Form.edit(auto__model=Todo, instance=lambda pk, **_: Todo.objects.get(pk=pk))
+    todo = Form.edit(title=_("Todo"), auto__model=Todo, instance=lambda pk, **_: Todo.objects.get(pk=pk))
 
     season_todos = EditTable(
+        title=_("Season todos"),
         auto__model=SeasonTodo,
-        # columns__season__filter__include=True,
+        columns__season__filter__include=True,
         columns__description=Column(attr="todo__description", after=3),
         columns__done__field__include=True,
         rows=lambda pk, **_: SeasonTodo.objects.filter(todo__pk=pk),
@@ -34,6 +38,7 @@ class TodoEdit(Form):
     )
 
     event_todos = EditTable(
+        title=_("Event todos"),
         auto__model=EventTodo,
         # columns__event__filter__include=True,
         columns__description=Column(attr="todo__description", after=3),
@@ -50,3 +55,19 @@ class TodoEdit(Form):
 
 
 todo_delete = Form.delete(instance=lambda pk, **_: Todo.objects.get(pk=pk))
+
+
+def toggleSeasonTodo(request, pk, todo_pk):
+    todo = SeasonTodo.objects.get(pk=todo_pk)
+    assert todo is not None, "Can't find season todo for pk %s" % todo_pk
+    todo.done = not todo.done
+    todo.save()
+    return HttpResponseRedirect(reverse("main_menu.seasons"))
+
+
+def toggleEventTodo(request, pk, todo_pk):
+    todo = EventTodo.objects.get(pk=todo_pk)
+    assert todo is not None, "Can't find event todo for pk %s" % todo_pk
+    todo.done = not todo.done
+    todo.save()
+    return HttpResponseRedirect(reverse("main_menu.events"))

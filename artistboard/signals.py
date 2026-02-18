@@ -1,6 +1,7 @@
-from artistboard.models import Event, EventTodo, Season, SeasonTodo, Todo
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from artistboard.models import Event, EventTodo, Season, SeasonTodo, Todo
 
 
 @receiver(post_save)
