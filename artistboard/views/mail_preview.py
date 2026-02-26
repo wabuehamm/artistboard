@@ -47,6 +47,9 @@ class MailBuilder:
     def build_context_all_artists(self):
         return Context(dict(artists=Artist.objects.all()))
 
+    def build_context_single_event(self, event_pk):
+        return Context(dict(event=Event.objects.get(pk=event_pk)))
+
     def build_context(self):
         self.template = MailTemplate.objects.get(pk=self.request.GET["template"])
         match self.template.type:
@@ -60,6 +63,10 @@ class MailBuilder:
                 )
             case "all_artists":
                 self.context = self.build_context_all_artists()
+            case "single_event":
+                self.context = self.build_context_single_event(
+                    self.request.GET["object"]
+                )
 
 
 def render_field(request, field):
@@ -133,7 +140,9 @@ class MailPreview(Page):
         fields__template=Field.hidden(
             initial=lambda request, **_: request.GET["template"]
         ),
-        fields__object=Field.hidden(initial=lambda request, **_: request.GET["object"]),
+        fields__object=Field.hidden(
+            initial=lambda request, **_: request.GET["object"] if "object" in request.GET else ""
+        ),
         fields__to=Field.text(display_name=_("To"), initial=lambda request, **_: render_field(request, "to")),
         fields__cc=Field.text(display_name=_("CC"), initial=lambda request, **_: render_field(request, "cc")),
         fields__bcc=Field.text(

@@ -1,7 +1,8 @@
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from iommi import Column, Form, Page, Table
-from iommi.form import save_nested_forms
+from iommi import Column, Form, Page, Table, Action
+from iommi.form import save_nested_forms, Field
 
 from ..models import MailTemplate
 
@@ -51,3 +52,40 @@ class MailTemplateEdit(Form):
 mail_template_delete = Form.delete(
     instance=lambda pk, **_: MailTemplate.objects.get(pk=pk)
 )
+
+
+def handle_send_mail(form, **_):
+    if form.is_valid():
+        if "object" in form.fields:
+            return HttpResponseRedirect(
+                reverse(
+                    "mail-preview",
+                    query=dict(
+                        object=form.fields["object"].value,
+                        template=form.fields["template"].value.pk,
+                    ),
+                )
+            )
+        else:
+            return HttpResponseRedirect(
+                reverse(
+                    "mail-preview",
+                    query=dict(
+                        template=form.fields["template"].value.pk,
+                    ),
+                )
+            )
+
+
+class SendMailForm(Form):
+    title = _("Send mail")
+    template = Field.choice_queryset(
+        display_name=_("Template"),
+        model=MailTemplate,
+        choices=lambda form, **_: MailTemplate.objects.filter(type=form.extra.template_type)
+    )
+
+    class Meta:
+        actions__preview = Action.primary(
+            display_name=_("Preview"), post_handler=handle_send_mail
+        )
