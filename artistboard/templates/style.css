@@ -12,12 +12,14 @@
 }
 
 .main_menu {
-    width: 14em;
+    width: 20em;
     background-color: #221153
 }
 
 .grid-container {
     padding-top: 2em;
+    max-width: 100rem;
+    overflow: auto;
 }
 
 @media screen and (max-width: 767px) {
