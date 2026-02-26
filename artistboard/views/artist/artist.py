@@ -1,34 +1,11 @@
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Table
+from iommi import Column, EditColumn, EditTable, Field, Form, Page, Table
 from iommi.form import save_nested_forms
 
-from artistboard.models import Artist, MailTemplate, Link
-
-
-def handle_send_mail(form, **_):
-    if form.is_valid():
-        if form.fields["artist"]:
-            return HttpResponseRedirect(
-                reverse(
-                    "mail-preview",
-                    query=dict(
-                        object=form.fields["artist"].value,
-                        template=form.fields["template"].value.pk,
-                    ),
-                )
-            )
-    else:
-        return HttpResponseRedirect(
-            reverse(
-                "mail-preview",
-                query=dict(
-                    template=form.fields["template"].value.pk,
-                ),
-            )
-        )
+from artistboard.models import Artist, Link
+from artistboard.views.mail_template import SendMailForm
 
 
 class ArtistView(Page):
@@ -66,15 +43,7 @@ class ArtistView(Page):
         extra__redirect_to=".",
     )
 
-    send_mail = Form(
-        title=_("Send mail to all artists"),
-        fields__template=Field.choice_queryset(
-            choices=MailTemplate.objects.filter(type="all_artists")
-        ),
-        actions__preview=Action.primary(
-            display_name="Preview", post_handler=handle_send_mail
-        ),
-    )
+    send_mail = SendMailForm(extra__template_type="all_artists")
 
 
 class ArtistEditForm(Form):
@@ -107,20 +76,19 @@ class ArtistEditForm(Form):
         extra__redirect_to = lambda **_: reverse("main_menu.artists")
 
 
+class ArtistSendMailForm(SendMailForm):
+    object = Field.hidden(
+        initial=lambda pk, **_: pk
+    )
+
+    class Meta:
+        extra__template_type = "single_artist"
+
+
 class ArtistEdit(Page):
     artist = ArtistEditForm()
 
-    send_mail = Form(
-        title=_("Send mail"),
-        fields__template=Field.choice_queryset(
-            display_name=_("Template"),
-            choices=MailTemplate.objects.filter(type="single_artist")
-        ),
-        fields__artist=Field.hidden(initial=lambda pk, **_: pk),
-        actions__preview=Action.primary(
-            display_name=_("Preview"), post_handler=handle_send_mail
-        ),
-    )
+    send_mail = ArtistSendMailForm()
 
 
 artist_delete = Form.delete(instance=lambda pk, **_: Artist.objects.get(pk=pk))

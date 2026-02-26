@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from iommi import Column, EditColumn, EditTable, Field, Form, Page, Table
 from iommi.form import save_nested_forms
 
+from .mail_template import SendMailForm
 from ..models import Artist, Event, EventArtist, EventTodo, Season
 
 
@@ -82,7 +83,7 @@ def get_booked_artist_initial(instance, **kwargs):
     return None
 
 
-class EventEdit(Form):
+class EventEditForm(Form):
     event = Form.edit(
         title=_("Event"),
         auto__model=Event,
@@ -115,6 +116,19 @@ class EventEdit(Form):
     class Meta:
         actions__submit__post_handler = save_nested_forms
         extra__redirect_to = lambda **_: reverse("main_menu.events")
+
+
+class EventSendMailForm(SendMailForm):
+    object = Field.hidden(initial=lambda pk, **_: pk)
+
+    class Meta:
+        extra__template_type = "single_event"
+
+
+class EventEdit(Page):
+    edit_event = EventEditForm()
+
+    send_mail = EventSendMailForm()
 
 
 event_delete = Form.delete(instance=lambda pk, **_: Event.objects.get(pk=pk))

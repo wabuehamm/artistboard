@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-18 09:18+0000\n"
+"POT-Creation-Date: 2026-02-26 13:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: artistboard/models.py:7 artistboard/models.py:117 artistboard/models.py:216
+#: artistboard/models.py:7 artistboard/models.py:123 artistboard/models.py:228
 msgid "Name"
 msgstr "Name"
 
@@ -70,17 +70,17 @@ msgstr "Künstler*innen Info"
 msgid "Image"
 msgstr "Bild"
 
-#: artistboard/models.py:23 artistboard/models.py:46 artistboard/models.py:202
-#: artistboard/views/artist/artist.py:82
+#: artistboard/models.py:23 artistboard/models.py:46 artistboard/models.py:214
+#: artistboard/views/artist/artist.py:51
 msgid "Artist"
 msgstr "Künstler*in"
 
 #: artistboard/models.py:24 artistboard/urls.py:66
-#: artistboard/views/artist/artist.py:36 artistboard/views/event.py:41
+#: artistboard/views/artist/artist.py:13 artistboard/views/event.py:42
 msgid "Artists"
 msgstr "Künstler*innen"
 
-#: artistboard/models.py:48 artistboard/models.py:218
+#: artistboard/models.py:48 artistboard/models.py:230
 msgid "Type"
 msgstr "Typ"
 
@@ -92,12 +92,12 @@ msgstr "URL"
 msgid "Link"
 msgstr "Verknüpfung"
 
-#: artistboard/models.py:66 artistboard/views/artist/artist.py:90
+#: artistboard/models.py:66 artistboard/views/artist/artist.py:59
 msgid "Links"
 msgstr "Verknüpfungen"
 
-#: artistboard/models.py:73 artistboard/models.py:78 artistboard/models.py:103
-#: artistboard/models.py:189 artistboard/views/todos.py:26
+#: artistboard/models.py:73 artistboard/models.py:78 artistboard/models.py:109
+#: artistboard/models.py:201 artistboard/views/todos.py:26
 msgid "Todo"
 msgstr "Todo"
 
@@ -109,20 +109,20 @@ msgstr "Beschreibung"
 msgid "Available for"
 msgstr "Verwendbar für"
 
-#: artistboard/models.py:75 artistboard/models.py:92 artistboard/models.py:104
-#: artistboard/models.py:116 artistboard/views/event.py:29
+#: artistboard/models.py:75 artistboard/models.py:92 artistboard/models.py:110
+#: artistboard/models.py:122 artistboard/views/event.py:30
 #: artistboard/views/season/season.py:64
 msgid "Season"
 msgstr "Saison"
 
-#: artistboard/models.py:75 artistboard/models.py:137 artistboard/models.py:188
-#: artistboard/models.py:201 artistboard/views/event.py:86
+#: artistboard/models.py:75 artistboard/models.py:143 artistboard/models.py:200
+#: artistboard/models.py:213 artistboard/views/event.py:88
 #: artistboard/views/season/booking_overview.py:11
 msgid "Event"
 msgstr "Veranstaltung"
 
 #: artistboard/models.py:79 artistboard/urls.py:112
-#: artistboard/views/event.py:93 artistboard/views/season/season.py:68
+#: artistboard/views/event.py:95 artistboard/views/season/season.py:68
 #: artistboard/views/todos.py:12
 msgid "Todos"
 msgstr "Todos"
@@ -136,138 +136,143 @@ msgstr "Jahr"
 msgid "Seasons"
 msgstr "Saisons"
 
-#: artistboard/models.py:105 artistboard/models.py:190
+#: artistboard/models.py:111 artistboard/models.py:202
 msgid "Done"
 msgstr "Erledigt"
 
-#: artistboard/models.py:108
+#: artistboard/models.py:114
 msgid "Season Todo"
 msgstr "Saison Todo"
 
-#: artistboard/models.py:109
+#: artistboard/models.py:115
 msgid "Season Todos"
 msgstr "Saison Todos"
 
-#: artistboard/models.py:120 artistboard/models.py:128
+#: artistboard/models.py:126 artistboard/models.py:134
 msgid "Show"
 msgstr "Show"
 
-#: artistboard/models.py:121 artistboard/views/season/season.py:77
+#: artistboard/models.py:127 artistboard/views/season/season.py:77
 msgid "Shows"
 msgstr "Shows"
 
-#: artistboard/models.py:129
+#: artistboard/models.py:135
 msgid "Starts on"
 msgstr "Beginnt am"
 
-#: artistboard/models.py:130
+#: artistboard/models.py:136
 msgid "Starts at"
 msgstr "Beginnt um"
 
-#: artistboard/models.py:131
+#: artistboard/models.py:137
 msgid "Booked Artist"
 msgstr "Gebuchte Künstler*innen"
 
-#: artistboard/models.py:132
+#: artistboard/models.py:138
 msgid "Agreement"
 msgstr "Absprache"
 
-#: artistboard/models.py:133
+#: artistboard/models.py:139
 msgid "Required free tickets"
 msgstr "Benötigte Anzahl freier Tickets"
 
-#: artistboard/models.py:134
+#: artistboard/models.py:140
 msgid "Required paid tickets"
 msgstr "Benötigte Anzahl bezahlter Tickets"
 
-#: artistboard/models.py:138 artistboard/urls.py:46
-#: artistboard/views/event.py:22
+#: artistboard/models.py:144 artistboard/urls.py:46
+#: artistboard/views/event.py:23
 #: artistboard/views/season/booking_overview.py:30
 #: artistboard/views/season/season.py:32 artistboard/views/season/season.py:37
 msgid "Events"
 msgstr "Veranstaltungen"
 
-#: artistboard/models.py:193
+#: artistboard/models.py:205
 msgid "Event Todo"
 msgstr "Veranstaltungstodo"
 
-#: artistboard/models.py:194
+#: artistboard/models.py:206
 msgid "Event Todos"
 msgstr "Veranstaltungstodos"
 
-#: artistboard/models.py:205
+#: artistboard/models.py:217
 msgid "Opportunity"
 msgstr "Gelegenheit"
 
-#: artistboard/models.py:206 artistboard/views/artist/artist.py:52
-#: artistboard/views/artist/artist.py:54 artistboard/views/event.py:102
+#: artistboard/models.py:218 artistboard/views/artist/artist.py:29
+#: artistboard/views/artist/artist.py:31 artistboard/views/event.py:104
 #: artistboard/views/season/booking_overview.py:16
 msgid "Opportunities"
 msgstr "Gelegenheiten"
 
-#: artistboard/models.py:220
+#: artistboard/models.py:232
 msgid "Single season"
 msgstr "Einzelne Saison"
 
-#: artistboard/models.py:221
+#: artistboard/models.py:233
 msgid "All artists"
 msgstr "Alle Künstler*innen"
 
-#: artistboard/models.py:222
+#: artistboard/models.py:234
 msgid "Single artist"
 msgstr "Einzelne Künstler*in"
 
-#: artistboard/models.py:225
+#: artistboard/models.py:235
+msgid "Single event"
+msgstr "Einzelne Veranstaltung"
+
+#: artistboard/models.py:238
 msgid ""
 "Single season will get a context of season, shows, events, artists. All "
 "Artists will get the context artists. Single artist will get the context "
-"artist, booked_events, unbooked_events and last_season."
+"artist, booked_events, unbooked_events and last_season. Single event will "
+"get the context event."
 msgstr ""
 "Einzelne Saison bekommt einen Kontext mit season, shows, events, artists. "
-"Alle Künstler*innen bekommen einen Kontext mit artists. "
-"Einzelne Künstler*in bekommt einen Kontext mit artist, booked_events, "
-"unbooked_events und last_season."
+"Alle Künstler*innen bekommen einen Kontext mit artists. Einzelne Künstler*in "
+"bekommt einen Kontext mit artist, booked_events, unbooked_events und "
+"last_season. Einzelne Veranstaltung bekommt einen Kontext event."
 
-#: artistboard/models.py:228 artistboard/views/mail_preview.py:144
+#: artistboard/models.py:241 artistboard/views/mail_preview.py:153
 msgid "Subject"
 msgstr "Betreff"
 
-#: artistboard/models.py:229 artistboard/views/mail_preview.py:137
+#: artistboard/models.py:242 artistboard/views/mail_preview.py:146
 msgid "To"
 msgstr "An"
 
-#: artistboard/models.py:230 artistboard/views/mail_preview.py:138
+#: artistboard/models.py:243 artistboard/views/mail_preview.py:147
 msgid "CC"
 msgstr "CC"
 
-#: artistboard/models.py:231 artistboard/views/mail_preview.py:140
+#: artistboard/models.py:244 artistboard/views/mail_preview.py:149
 msgid "BCC"
 msgstr "BCC"
 
-#: artistboard/models.py:232 artistboard/views/mail_preview.py:148
+#: artistboard/models.py:245 artistboard/views/mail_preview.py:157
 msgid "Body (Text)"
 msgstr "Inhalt (Text)"
 
-#: artistboard/models.py:233 artistboard/views/mail_preview.py:153
+#: artistboard/models.py:246 artistboard/views/mail_preview.py:162
 msgid "Body (HTML)"
 msgstr "Inhalt (HTML)"
 
-#: artistboard/models.py:235
+#: artistboard/models.py:248
 msgid "Use markdown"
 msgstr "Markdown verwenden"
 
-#: artistboard/models.py:237
+#: artistboard/models.py:250
 msgid "Use the markdown rendered version of the text body for the HTML body"
 msgstr ""
 "Verwende eine mit Markdown-erzeugte Version des Text-Inhalts für den HTML-"
 "Inhalt"
 
-#: artistboard/models.py:241 artistboard/views/mail_template.py:35
+#: artistboard/models.py:254 artistboard/views/mail_template.py:36
 msgid "Mail template"
 msgstr "Mailvorlage"
 
-#: artistboard/models.py:242 artistboard/urls.py:90
-#: artistboard/views/mail_template.py:11
+#: artistboard/models.py:255 artistboard/urls.py:90
+#: artistboard/views/mail_template.py:12
 msgid "Mail templates"
 msgstr "Mailvorlagen"
 
@@ -287,28 +292,9 @@ msgstr "Passwort ändern"
 msgid "Logout"
 msgstr "Abmelden"
 
-#: artistboard/views/artist/artist.py:64
+#: artistboard/views/artist/artist.py:41
 msgid "New artist"
 msgstr "Neue Künstler*in"
-
-#: artistboard/views/artist/artist.py:70
-msgid "Send mail to all artists"
-msgstr "Eine Mail an alle Künstler*innen schicken"
-
-#: artistboard/views/artist/artist.py:114
-#: artistboard/views/season/season.py:112
-msgid "Send mail"
-msgstr "Mail verschicken"
-
-#: artistboard/views/artist/artist.py:116
-#: artistboard/views/season/season.py:114
-msgid "Template"
-msgstr "Mailvorlage"
-
-#: artistboard/views/artist/artist.py:121
-#: artistboard/views/season/season.py:119
-msgid "Preview"
-msgstr "Vorschau"
 
 #: artistboard/views/artist/event.py:17
 #, python-format
@@ -323,11 +309,11 @@ msgstr "← Zurück zu Künstler*innen"
 msgid "New opportunity"
 msgstr "Neue Gelegenheit"
 
-#: artistboard/views/event.py:45 artistboard/views/todos.py:41
+#: artistboard/views/event.py:46 artistboard/views/todos.py:41
 msgid "Event todos"
 msgstr "Veranstaltungstodos"
 
-#: artistboard/views/event.py:59
+#: artistboard/views/event.py:61
 msgid "New event"
 msgstr "Neue Veranstaltung"
 
@@ -344,21 +330,33 @@ msgid "Welcome to the artistboard. Please select a menu option on the left."
 msgstr ""
 "Willkommen bei artistboard. Bitte wähle eine Option auf der linken Seite."
 
-#: artistboard/views/mail_preview.py:73
+#: artistboard/views/mail_preview.py:80
 msgid "Error in the mail configuration. Missing from"
 msgstr "Fehler in der Mail-Konfiguration. 'from' fehlt."
 
-#: artistboard/views/mail_preview.py:127
+#: artistboard/views/mail_preview.py:134
 msgid "Mail sent successfully."
 msgstr "Mail erfolgreich gesendet."
 
-#: artistboard/views/mail_preview.py:162
+#: artistboard/views/mail_preview.py:171
 msgid "Send"
 msgstr "Senden"
 
-#: artistboard/views/mail_template.py:21
+#: artistboard/views/mail_template.py:22
 msgid "New mail template"
 msgstr "Neue Mailvorlage"
+
+#: artistboard/views/mail_template.py:81
+msgid "Send mail"
+msgstr "Mail verschicken"
+
+#: artistboard/views/mail_template.py:83
+msgid "Template"
+msgstr "Mailvorlage"
+
+#: artistboard/views/mail_template.py:90
+msgid "Preview"
+msgstr "Vorschau"
 
 #: artistboard/views/season/booking_overview.py:21
 #: artistboard/views/season/season.py:40 artistboard/views/season/season.py:45
@@ -384,3 +382,6 @@ msgstr "Neue Saison"
 #: artistboard/views/todos.py:19
 msgid "New Todo"
 msgstr "Neues Todo"
+
+#~ msgid "Send mail to all artists"
+#~ msgstr "Eine Mail an alle Künstler*innen schicken"

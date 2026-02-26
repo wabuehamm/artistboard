@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from iommi import Action, Column, EditColumn, EditTable, Field, Form, Page, Table
+from iommi import Column, EditColumn, EditTable, Field, Form, Page, Table
 from iommi.form import save_nested_forms
 
-from artistboard.models import MailTemplate, Season, SeasonTodo, Show
+from artistboard.models import Season, SeasonTodo, Show
+from artistboard.views.mail_template import SendMailForm
 
 
 def season_todos(pk):
@@ -92,33 +92,17 @@ class SeasonEditForm(Form):
         extra__redirect_to = lambda **_: "/seasons"
 
 
-def handle_send_mail(form, **_):
-    if form.is_valid():
-        return HttpResponseRedirect(
-            reverse(
-                "mail-preview",
-                query=dict(
-                    object=form.fields["season"].value,
-                    template=form.fields["template"].value.pk,
-                ),
-            )
-        )
+class SeasonSendMailForm(SendMailForm):
+    object = Field.hidden(initial=lambda pk, **_: pk)
+
+    class Meta:
+        extra__template_type = "single_season"
 
 
 class SeasonEdit(Page):
     edit = SeasonEditForm()
 
-    send_mail = Form(
-        title=_("Send mail"),
-        fields__template=Field.choice_queryset(
-            display_name=_("Template"),
-            choices=MailTemplate.objects.filter(type="single_season")
-        ),
-        fields__season=Field.hidden(initial=lambda pk, **_: pk),
-        actions__preview=Action.primary(
-            display_name=_("Preview"), post_handler=handle_send_mail
-        ),
-    )
+    send_mail = SeasonSendMailForm()
 
 
 season_delete = Form.delete(instance=lambda pk, **_: Season.objects.get(pk=pk))

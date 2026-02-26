@@ -232,9 +232,10 @@ class MailTemplate(models.Model):
             ("single_season", _("Single season")),
             ("all_artists", _("All artists")),
             ("single_artist", _("Single artist")),
+            ("single_event", _("Single event")),
         ],
         help_text=_(
-            "Single season will get a context of season, shows, events, artists. All Artists will get the context artists. Single artist will get the context artist, booked_events, unbooked_events and last_season."
+            "Single season will get a context of season, shows, events, artists. All Artists will get the context artists. Single artist will get the context artist, booked_events, unbooked_events and last_season. Single event will get the context event."
         ),
     )
     subject = models.TextField(_("Subject"))
