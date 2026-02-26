@@ -52,6 +52,7 @@ class EventView(Page):
             }
         ) if row.booked_artist is not None else "",
         columns__show__filter__include=True,
+        columns__booked_artist__filter__include=True,
         columns__edit=Column.edit(),
         columns__delete=Column.delete(),
     )
