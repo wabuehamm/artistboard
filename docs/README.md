@@ -54,7 +54,7 @@ artistboard supports sending out templated e-mails filled with relevant data. Cl
 
 ![Mail templates](./mail_templates.png)
 
-A template is designed for different points in artistboard. Depending on that type, the template will get different contexts with data that you can use.
+A template is designed for different views in artistboard. Depending on that type, the template will get different contexts with data that you can use.
 
 * Single season:
   * season: Season object
@@ -68,6 +68,8 @@ A template is designed for different points in artistboard. Depending on that ty
   * booked_events: all booked events for that artists
   * unbooked_events: All events without a booked artist
   * last_season: The last season object, which is usually the current one
+* Single event:
+  * event: Event object
 
 Please refer to the [models definition](../artistboard/models.py) for the available fields of the different context parts.
 
